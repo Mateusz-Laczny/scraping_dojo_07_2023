@@ -2,10 +2,8 @@ from enum import Enum
 
 from selenium import webdriver
 from selenium.common import NoSuchElementException
-from selenium.webdriver import Proxy
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
