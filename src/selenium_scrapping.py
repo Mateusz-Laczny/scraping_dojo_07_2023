@@ -38,7 +38,7 @@ class SeleniumScrapper:
                 for tags_html_element in tags_html_elements:
                     tags.append(tags_html_element.text)
 
-                quotes_list.append(Quote(author=author, quote_text=quote_text, tags=tags))
+                quotes_list.append(Quote(by=author, text=quote_text, tags=tags))
 
             try:
                 next_button_element_wrapper = self.driver.find_element(By.CLASS_NAME, "next")
