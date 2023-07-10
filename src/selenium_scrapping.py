@@ -7,11 +7,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+from environment import input_url
+
 options = Options()
 # options.add_argument(f'--proxy-server={proxy}')
 
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-driver.get("http://quotes.toscrape.com/js-delayed/")
+driver.get(input_url)
 
 reached_end = False
 while not reached_end:
