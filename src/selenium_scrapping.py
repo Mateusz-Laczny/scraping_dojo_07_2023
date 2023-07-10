@@ -12,7 +12,7 @@ from quotes import Quote
 
 class SeleniumScrapper:
 
-    def __init__(self, proxy=None) -> None:
+    def __init__(self, proxy: str = None) -> None:
         self.proxy = proxy
         options = Options()
         if proxy is not None:
@@ -20,7 +20,7 @@ class SeleniumScrapper:
 
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-    def scrape(self, start_url) -> list[Quote]:
+    def scrape(self, start_url: str) -> list[Quote]:
         self.driver.get(start_url)
 
         reached_end = False
