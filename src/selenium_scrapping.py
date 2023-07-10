@@ -10,7 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from quotes import Quote
 
 
-class SeleniumScrapper:
+class SeleniumQuoteScrapper:
 
     def __init__(self, proxy: str = None) -> None:
         self.proxy = proxy
