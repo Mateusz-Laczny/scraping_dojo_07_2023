@@ -7,33 +7,44 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-from environment import input_url
+from quotes import Quote
 
-options = Options()
-# options.add_argument(f'--proxy-server={proxy}')
 
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-driver.get(input_url)
+class SeleniumScrapper:
 
-reached_end = False
-while not reached_end:
-    WebDriverWait(driver, 20).until(
-        EC.visibility_of_element_located((By.ID, "quotesPlaceholder"))
-    )
-    quotes_html_elements = driver.find_elements(By.CLASS_NAME, "quote")
-    for quote_html_element in quotes_html_elements:
-        quote_text = quote_html_element.find_element(By.CLASS_NAME, "text").text
-        author = quote_html_element.find_element(By.CLASS_NAME, "author").text
-        tags_html_elements = quote_html_element.find_elements(By.CLASS_NAME, "tag")
-        tags = []
-        for tags_html_element in tags_html_elements:
-            tags.append(tags_html_element.text)
+    def __init__(self, proxy=None) -> None:
+        self.proxy = proxy
+        options = Options()
+        if proxy is not None:
+            options.add_argument(f'--proxy-server={self.proxy}')
 
-        print('Quote:\n', quote_text, '\nAuthor:\n', author, '\nTags:\n', tags, end='\n')
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-    try:
-        next_button_element_wrapper = driver.find_element(By.CLASS_NAME, "next")
-        next_button_element = next_button_element_wrapper.find_element(By.TAG_NAME, "a")
-        next_button_element.click()
-    except NoSuchElementException:
-        reached_end = True
+    def scrape(self, start_url) -> list[Quote]:
+        self.driver.get(start_url)
+
+        reached_end = False
+        quotes_list = []
+        while not reached_end:
+            WebDriverWait(self.driver, 20).until(
+                EC.visibility_of_element_located((By.ID, "quotesPlaceholder"))
+            )
+            quotes_html_elements = self.driver.find_elements(By.CLASS_NAME, "quote")
+            for quote_html_element in quotes_html_elements:
+                author = quote_html_element.find_element(By.CLASS_NAME, "author").text
+                quote_text = quote_html_element.find_element(By.CLASS_NAME, "text").text
+                tags_html_elements = quote_html_element.find_elements(By.CLASS_NAME, "tag")
+                tags = []
+                for tags_html_element in tags_html_elements:
+                    tags.append(tags_html_element.text)
+
+                quotes_list.append(Quote(author=author, quote_text=quote_text, tags=tags))
+
+            try:
+                next_button_element_wrapper = self.driver.find_element(By.CLASS_NAME, "next")
+                next_button_element = next_button_element_wrapper.find_element(By.TAG_NAME, "a")
+                next_button_element.click()
+            except NoSuchElementException:
+                reached_end = True
+
+        return quotes_list
